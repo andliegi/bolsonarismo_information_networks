@@ -1,0 +1,222 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: white;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "royalblue", "font": {"color": "black"}, "id": "Abraham Weintraub", "label": "Abraham Weintraub", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "youtube", "label": "youtube", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Alexandre Frota", "label": "Alexandre Frota", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "oantagonista", "label": "oantagonista", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Alexandre Garcia Oficial", "label": "Alexandre Garcia Oficial", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "google", "label": "google", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "mixcloud", "label": "mixcloud", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Al\u00ea Silva", "label": "Al\u00ea Silva", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "alesilvaoficial", "label": "alesilvaoficial", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Augusto Nunes", "label": "Augusto Nunes", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "facebook", "label": "facebook", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "noticias.r7", "label": "noticias.r7", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "revistaoeste", "label": "revistaoeste", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "veja.abril", "label": "veja.abril", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "wp.me", "label": "wp.me", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Avan\u00e7a Brasil", "label": "Avan\u00e7a Brasil", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "avancabrasil.org", "label": "avancabrasil.org", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "avancabrasil.site", "label": "avancabrasil.site", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "conexaopolitica", "label": "conexaopolitica", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "contrafatos", "label": "contrafatos", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "convergencias.org.br", "label": "convergencias.org.br", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "criticanacional", "label": "criticanacional", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "gazetadopovo", "label": "gazetadopovo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jornaldacidadeonline", "label": "jornaldacidadeonline", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "renovamidia", "label": "renovamidia", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "riotbits", "label": "riotbits", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "senado.leg.br", "label": "senado.leg.br", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "sensoincomum.org", "label": "sensoincomum.org", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "thinkspot", "label": "thinkspot", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bia Kicis", "label": "Bia Kicis", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bibo Nunes", "label": "Bibo Nunes", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "folha.uol", "label": "folha.uol", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "gauchazh.clicrbs", "label": "gauchazh.clicrbs", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bolsonaro Mito", "label": "Bolsonaro Mito", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "portalbr7", "label": "portalbr7", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bolsonaro Presidente 2026", "label": "Bolsonaro Presidente 2026", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jogopolitico", "label": "jogopolitico", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bolsonaro presidente  #Apoiadores", "label": "Bolsonaro presidente  #Apoiadores", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "12starparty", "label": "12starparty", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "borderlesssaude", "label": "borderlesssaude", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "br.lovelife75", "label": "br.lovelife75", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "hojenoticias", "label": "hojenoticias", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "i7news", "label": "i7news", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Bosco Foz", "label": "Bosco Foz", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Brasil 200", "label": "Brasil 200", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "brasil200", "label": "brasil200", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "institutobrasil200", "label": "institutobrasil200", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Brasil Conservador", "label": "Brasil Conservador", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "g1.globo", "label": "g1.globo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "noticias.uol", "label": "noticias.uol", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "oglobo.globo", "label": "oglobo.globo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "otempo", "label": "otempo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "pleno.news", "label": "pleno.news", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "republicadecuritiba.net", "label": "republicadecuritiba.net", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Brasil Paralelo", "label": "Brasil Paralelo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "brasilparalelo", "label": "brasilparalelo", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Brasil Sem Medo", "label": "Brasil Sem Medo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "brasilsemmedo", "label": "brasilsemmedo", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Canal Hipocritas", "label": "Canal Hipocritas", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Carla Zambelli", "label": "Carla Zambelli", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Carlos Bolsonaro", "label": "Carlos Bolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Carlos Jordy", "label": "Carlos Jordy", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Chris Tonietto", "label": "Chris Tonietto", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Conex\u00e3o Pol\u00edtica", "label": "Conex\u00e3o Pol\u00edtica", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Delegado Francischini", "label": "Delegado Francischini", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "bemparana", "label": "bemparana", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "fernandofrancischini", "label": "fernandofrancischini", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Eduardo Bolsonaro", "label": "Eduardo Bolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Eu Odeio a Globo", "label": "Eu Odeio a Globo", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "plantaobrasil.net", "label": "plantaobrasil.net", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Eu apoio Bolsonaro", "label": "Eu apoio Bolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Eu quero o impeachment de LULA. Fora PT", "label": "Eu quero o impeachment de LULA. Fora PT", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Felipe Francischini", "label": "Felipe Francischini", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "felipefrancischini", "label": "felipefrancischini", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Felipe Lintz", "label": "Felipe Lintz", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Filipe Barros", "label": "Filipe Barros", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "folhadelondrina", "label": "folhadelondrina", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "istoe", "label": "istoe", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "semprefamilia", "label": "semprefamilia", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "tercalivre", "label": "tercalivre", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Gazeta do Povo", "label": "Gazeta do Povo", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "General Hamilton Mour\u00e3o", "label": "General Hamilton Mour\u00e3o", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "twitter", "label": "twitter", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Gustavo Gayer", "label": "Gustavo Gayer", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Jair Messias Bolsonaro", "label": "Jair Messias Bolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Joice Hasselmann", "label": "Joice Hasselmann", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Jornal Brasil Online", "label": "Jornal Brasil Online", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jornalbrasilonline", "label": "jornalbrasilonline", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "pordentrodapolitica", "label": "pordentrodapolitica", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Jornal da Cidade Online", "label": "Jornal da Cidade Online", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Jovem Pan Morning Show", "label": "Jovem Pan Morning Show", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jovempan", "label": "jovempan", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Jovem Pan News", "label": "Jovem Pan News", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "blog.jovempan", "label": "blog.jovempan", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "buff.ly", "label": "buff.ly", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Juventude de Direita com Bolsonaro", "label": "Juventude de Direita com Bolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Karol Eller", "label": "Karol Eller", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "agenciabrasil.ebc", "label": "agenciabrasil.ebc", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Kim Paim", "label": "Kim Paim", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Luiz Lima", "label": "Luiz Lima", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jornaldaregiao", "label": "jornaldaregiao", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Luiz Philippe de Orleans e Bragan\u00e7a", "label": "Luiz Philippe de Orleans e Bragan\u00e7a", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "estadao", "label": "estadao", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "lpbraganca", "label": "lpbraganca", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "poder360", "label": "poder360", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Magno Malta", "label": "Magno Malta", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Major Olimpio", "label": "Major Olimpio", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "congressoemfoco.uol", "label": "congressoemfoco.uol", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "metropoles", "label": "metropoles", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Marcos Rog\u00e9rio", "label": "Marcos Rog\u00e9rio", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Michelle Bolsonaro Eu Apoio", "label": "Michelle Bolsonaro Eu Apoio", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "newsatual", "label": "newsatual", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Movimento Endireita Brasil", "label": "Movimento Endireita Brasil", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Movimento Meritocracia de Direita", "label": "Movimento Meritocracia de Direita", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Olavo de Carvalho", "label": "Olavo de Carvalho", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "blogdoolavo", "label": "blogdoolavo", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Os Pingos nos Is - Jovem Pan", "label": "Os Pingos nos Is - Jovem Pan", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Oswaldo Eust\u00e1quio", "label": "Oswaldo Eust\u00e1quio", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "horabrasilia", "label": "horabrasilia", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Pacto Contra o #PT", "label": "Pacto Contra o #PT", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Partido Anti-PT", "label": "Partido Anti-PT", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "antiptnews.wordpress", "label": "antiptnews.wordpress", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Partido Brasil", "label": "Partido Brasil", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "1news", "label": "1news", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "agentesfederais", "label": "agentesfederais", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "altavista.news", "label": "altavista.news", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "arenaf5.blogspot", "label": "arenaf5.blogspot", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "blogdohenriques", "label": "blogdohenriques", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "br.blastingnews", "label": "br.blastingnews", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "br.blastingpop", "label": "br.blastingpop", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "edvaldohenrique.blogspot", "label": "edvaldohenrique.blogspot", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "imprensabrasil", "label": "imprensabrasil", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "jornal316", "label": "jornal316", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "newsrondonia", "label": "newsrondonia", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "opiniaocritica", "label": "opiniaocritica", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "partidobrasiloficial", "label": "partidobrasiloficial", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "profetacristao", "label": "profetacristao", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "tribunadebrasilia", "label": "tribunadebrasilia", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "tudooknoticias", "label": "tudooknoticias", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "tvcidadenews", "label": "tvcidadenews", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Paulo Mathias", "label": "Paulo Mathias", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Pleno.News", "label": "Pleno.News", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Professor Paschoal", "label": "Professor Paschoal", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Programa P\u00e2nico", "label": "Programa P\u00e2nico", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Revista Oeste", "label": "Revista Oeste", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "ow.ly", "label": "ow.ly", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Rodrigo Constantino", "label": "Rodrigo Constantino", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Senso Incomum", "label": "Senso Incomum", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Somos Todos Bolsonaro", "label": "Somos Todos Bolsonaro", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "folhadarepublica", "label": "folhadarepublica", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "SomostodosBolsonaro", "label": "SomostodosBolsonaro", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "Vista P\u00e1tria", "label": "Vista P\u00e1tria", "shape": "dot"}, {"color": "lightcoral", "font": {"color": "black"}, "id": "vistapatria", "label": "vistapatria", "shape": "dot"}, {"color": "royalblue", "font": {"color": "black"}, "id": "ancap.su", "label": "ancap.su", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": "Abraham Weintraub", "to": "youtube", "value": 7}, {"from": "youtube", "to": "Alexandre Garcia Oficial", "value": 82}, {"from": "youtube", "to": "Augusto Nunes", "value": 7}, {"from": "youtube", "to": "Avan\u00e7a Brasil", "value": 58}, {"from": "youtube", "to": "Bia Kicis", "value": 7}, {"from": "youtube", "to": "Bibo Nunes", "value": 9}, {"from": "youtube", "to": "Bosco Foz", "value": 5}, {"from": "youtube", "to": "Canal Hipocritas", "value": 5}, {"from": "youtube", "to": "Carla Zambelli", "value": 17}, {"from": "youtube", "to": "Chris Tonietto", "value": 5}, {"from": "youtube", "to": "Eduardo Bolsonaro", "value": 58}, {"from": "youtube", "to": "Eu Odeio a Globo", "value": 27}, {"from": "youtube", "to": "Felipe Lintz", "value": 16}, {"from": "youtube", "to": "Gustavo Gayer", "value": 298}, {"from": "youtube", "to": "Jair Messias Bolsonaro", "value": 5}, {"from": "youtube", "to": "Joice Hasselmann", "value": 31}, {"from": "youtube", "to": "Kim Paim", "value": 188}, {"from": "youtube", "to": "Magno Malta", "value": 24}, {"from": "youtube", "to": "Movimento Endireita Brasil", "value": 11}, {"from": "youtube", "to": "Olavo de Carvalho", "value": 98}, {"from": "youtube", "to": "Partido Brasil", "value": 22}, {"from": "youtube", "to": "Paulo Mathias", "value": 7}, {"from": "youtube", "to": "Revista Oeste", "value": 12}, {"from": "youtube", "to": "Rodrigo Constantino", "value": 6}, {"from": "youtube", "to": "Senso Incomum", "value": 6}, {"from": "youtube", "to": "SomostodosBolsonaro", "value": 6}, {"from": "youtube", "to": "Vista P\u00e1tria", "value": 70}, {"from": "youtube", "to": "ancap.su", "value": 63}, {"from": "Alexandre Frota", "to": "oantagonista", "value": 5}, {"from": "oantagonista", "to": "Avan\u00e7a Brasil", "value": 24}, {"from": "oantagonista", "to": "Filipe Barros", "value": 25}, {"from": "oantagonista", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 8}, {"from": "oantagonista", "to": "Major Olimpio", "value": 10}, {"from": "oantagonista", "to": "Movimento Endireita Brasil", "value": 17}, {"from": "oantagonista", "to": "Partido Brasil", "value": 5}, {"from": "Alexandre Garcia Oficial", "to": "google", "value": 38}, {"from": "Alexandre Garcia Oficial", "to": "mixcloud", "value": 9}, {"from": "google", "to": "Avan\u00e7a Brasil", "value": 7}, {"from": "google", "to": "Eduardo Bolsonaro", "value": 5}, {"from": "google", "to": "Gustavo Gayer", "value": 105}, {"from": "google", "to": "Jornal da Cidade Online", "value": 8}, {"from": "google", "to": "Kim Paim", "value": 6}, {"from": "google", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 5}, {"from": "google", "to": "Magno Malta", "value": 80}, {"from": "google", "to": "Vista P\u00e1tria", "value": 15}, {"from": "Al\u00ea Silva", "to": "alesilvaoficial", "value": 13}, {"from": "Augusto Nunes", "to": "facebook", "value": 12}, {"from": "Augusto Nunes", "to": "noticias.r7", "value": 18}, {"from": "Augusto Nunes", "to": "revistaoeste", "value": 9}, {"from": "Augusto Nunes", "to": "veja.abril", "value": 219}, {"from": "Augusto Nunes", "to": "wp.me", "value": 12}, {"from": "facebook", "to": "Avan\u00e7a Brasil", "value": 13}, {"from": "facebook", "to": "Brasil Paralelo", "value": 7}, {"from": "facebook", "to": "Carla Zambelli", "value": 6}, {"from": "facebook", "to": "Conex\u00e3o Pol\u00edtica", "value": 11}, {"from": "facebook", "to": "Eu apoio Bolsonaro", "value": 8}, {"from": "facebook", "to": "Filipe Barros", "value": 5}, {"from": "facebook", "to": "Partido Brasil", "value": 50}, {"from": "facebook", "to": "Professor Paschoal", "value": 5}, {"from": "noticias.r7", "to": "Major Olimpio", "value": 6}, {"from": "revistaoeste", "to": "Avan\u00e7a Brasil", "value": 8}, {"from": "revistaoeste", "to": "Filipe Barros", "value": 16}, {"from": "revistaoeste", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 44}, {"from": "revistaoeste", "to": "Revista Oeste", "value": 755}, {"from": "veja.abril", "to": "Brasil Conservador", "value": 6}, {"from": "veja.abril", "to": "Carlos Jordy", "value": 6}, {"from": "veja.abril", "to": "Major Olimpio", "value": 22}, {"from": "veja.abril", "to": "Movimento Endireita Brasil", "value": 8}, {"from": "veja.abril", "to": "Movimento Meritocracia de Direita", "value": 5}, {"from": "veja.abril", "to": "Partido Brasil", "value": 8}, {"from": "Avan\u00e7a Brasil", "to": "avancabrasil.org", "value": 6}, {"from": "Avan\u00e7a Brasil", "to": "avancabrasil.site", "value": 240}, {"from": "Avan\u00e7a Brasil", "to": "conexaopolitica", "value": 12}, {"from": "Avan\u00e7a Brasil", "to": "contrafatos", "value": 13}, {"from": "Avan\u00e7a Brasil", "to": "convergencias.org.br", "value": 5}, {"from": "Avan\u00e7a Brasil", "to": "criticanacional", "value": 74}, {"from": "Avan\u00e7a Brasil", "to": "gazetadopovo", "value": 6}, {"from": "Avan\u00e7a Brasil", "to": "jornaldacidadeonline", "value": 13}, {"from": "Avan\u00e7a Brasil", "to": "renovamidia", "value": 11}, {"from": "Avan\u00e7a Brasil", "to": "riotbits", "value": 6}, {"from": "Avan\u00e7a Brasil", "to": "senado.leg.br", "value": 5}, {"from": "Avan\u00e7a Brasil", "to": "sensoincomum.org", "value": 9}, {"from": "Avan\u00e7a Brasil", "to": "thinkspot", "value": 43}, {"from": "conexaopolitica", "to": "Brasil Conservador", "value": 12}, {"from": "conexaopolitica", "to": "Conex\u00e3o Pol\u00edtica", "value": 1802}, {"from": "conexaopolitica", "to": "Eduardo Bolsonaro", "value": 5}, {"from": "conexaopolitica", "to": "Filipe Barros", "value": 9}, {"from": "gazetadopovo", "to": "Brasil Conservador", "value": 8}, {"from": "gazetadopovo", "to": "Delegado Francischini", "value": 6}, {"from": "gazetadopovo", "to": "Filipe Barros", "value": 39}, {"from": "gazetadopovo", "to": "Gazeta do Povo", "value": 7417}, {"from": "gazetadopovo", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 6}, {"from": "gazetadopovo", "to": "Rodrigo Constantino", "value": 597}, {"from": "jornaldacidadeonline", "to": "Eduardo Bolsonaro", "value": 6}, {"from": "jornaldacidadeonline", "to": "Jornal da Cidade Online", "value": 3887}, {"from": "jornaldacidadeonline", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 5}, {"from": "jornaldacidadeonline", "to": "Movimento Meritocracia de Direita", "value": 22}, {"from": "jornaldacidadeonline", "to": "Pacto Contra o #PT", "value": 30}, {"from": "renovamidia", "to": "Carlos Bolsonaro", "value": 5}, {"from": "renovamidia", "to": "Filipe Barros", "value": 28}, {"from": "renovamidia", "to": "Juventude de Direita com Bolsonaro", "value": 5}, {"from": "renovamidia", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 9}, {"from": "senado.leg.br", "to": "Major Olimpio", "value": 10}, {"from": "sensoincomum.org", "to": "Filipe Barros", "value": 10}, {"from": "sensoincomum.org", "to": "Senso Incomum", "value": 708}, {"from": "Bibo Nunes", "to": "folha.uol", "value": 9}, {"from": "Bibo Nunes", "to": "gauchazh.clicrbs", "value": 13}, {"from": "folha.uol", "to": "Brasil Conservador", "value": 5}, {"from": "folha.uol", "to": "Filipe Barros", "value": 5}, {"from": "folha.uol", "to": "Major Olimpio", "value": 14}, {"from": "folha.uol", "to": "Movimento Endireita Brasil", "value": 9}, {"from": "folha.uol", "to": "Paulo Mathias", "value": 9}, {"from": "Bolsonaro Mito", "to": "portalbr7", "value": 6}, {"from": "portalbr7", "to": "Eu quero o impeachment de LULA. Fora PT", "value": 43}, {"from": "portalbr7", "to": "Partido Brasil", "value": 22}, {"from": "portalbr7", "to": "SomostodosBolsonaro", "value": 3226}, {"from": "Bolsonaro Presidente 2026", "to": "jogopolitico", "value": 10}, {"from": "Bolsonaro presidente  #Apoiadores", "to": "12starparty", "value": 7}, {"from": "Bolsonaro presidente  #Apoiadores", "to": "borderlesssaude", "value": 5}, {"from": "Bolsonaro presidente  #Apoiadores", "to": "br.lovelife75", "value": 8}, {"from": "Bolsonaro presidente  #Apoiadores", "to": "hojenoticias", "value": 19}, {"from": "Bolsonaro presidente  #Apoiadores", "to": "i7news", "value": 7}, {"from": "Brasil 200", "to": "brasil200", "value": 240}, {"from": "Brasil 200", "to": "institutobrasil200", "value": 5}, {"from": "Brasil Conservador", "to": "g1.globo", "value": 8}, {"from": "Brasil Conservador", "to": "noticias.uol", "value": 7}, {"from": "Brasil Conservador", "to": "oglobo.globo", "value": 6}, {"from": "Brasil Conservador", "to": "otempo", "value": 5}, {"from": "Brasil Conservador", "to": "pleno.news", "value": 6}, {"from": "Brasil Conservador", "to": "republicadecuritiba.net", "value": 29}, {"from": "g1.globo", "to": "Carlos Jordy", "value": 9}, {"from": "g1.globo", "to": "Juventude de Direita com Bolsonaro", "value": 9}, {"from": "g1.globo", "to": "Luiz Philippe de Orleans e Bragan\u00e7a", "value": 10}, {"from": "g1.globo", "to": "Major Olimpio", "value": 16}, {"from": "g1.globo", "to": "Marcos Rog\u00e9rio", "value": 10}, {"from": "g1.globo", "to": "Movimento Endireita Brasil", "value": 22}, {"from": "g1.globo", "to": "Partido Brasil", "value": 6}, {"from": "g1.globo", "to": "Paulo Mathias", "value": 13}, {"from": "noticias.uol", "to": "Juventude de Direita com Bolsonaro", "value": 6}, {"from": "noticias.uol", "to": "Major Olimpio", "value": 10}, {"from": "noticias.uol", "to": "Movimento Endireita Brasil", "value": 5}, {"from": "noticias.uol", "to": "Movimento Meritocracia de Direita", "value": 6}, {"from": "noticias.uol", "to": "Partido Brasil", "value": 10}, {"from": "noticias.uol", "to": "Paulo Mathias", "value": 13}, {"from": "oglobo.globo", "to": "Carlos Jordy", "value": 10}, {"from": "oglobo.globo", "to": "Juventude de Direita com Bolsonaro", "value": 5}, {"from": "oglobo.globo", "to": "Movimento Endireita Brasil", "value": 6}, {"from": "pleno.news", "to": "Pleno.News", "value": 7878}, {"from": "republicadecuritiba.net", "to": "Movimento Meritocracia de Direita", "value": 10}, {"from": "republicadecuritiba.net", "to": "Somos Todos Bolsonaro", "value": 147}, {"from": "Brasil Paralelo", "to": "brasilparalelo", "value": 8}, {"from": "Brasil Sem Medo", "to": "brasilsemmedo", "value": 297}, {"from": "brasilsemmedo", "to": "Filipe Barros", "value": 12}, {"from": "brasilsemmedo", "to": "Olavo de Carvalho", "value": 5}, {"from": "Delegado Francischini", "to": "bemparana", "value": 6}, {"from": "Delegado Francischini", "to": "fernandofrancischini", "value": 47}, {"from": "Eu Odeio a Globo", "to": "plantaobrasil.net", "value": 785}, {"from": "Felipe Francischini", "to": "felipefrancischini", "value": 8}, {"from": "Filipe Barros", "to": "folhadelondrina", "value": 7}, {"from": "Filipe Barros", "to": "istoe", "value": 9}, {"from": "Filipe Barros", "to": "semprefamilia", "value": 9}, {"from": "Filipe Barros", "to": "tercalivre", "value": 8}, {"from": "semprefamilia", "to": "Gazeta do Povo", "value": 27}, {"from": "General Hamilton Mour\u00e3o", "to": "twitter", "value": 9}, {"from": "Jornal Brasil Online", "to": "jornalbrasilonline", "value": 38}, {"from": "Jornal Brasil Online", "to": "pordentrodapolitica", "value": 82}, {"from": "Jovem Pan Morning Show", "to": "jovempan", "value": 6}, {"from": "jovempan", "to": "Jovem Pan News", "value": 7201}, {"from": "jovempan", "to": "Major Olimpio", "value": 7}, {"from": "jovempan", "to": "Os Pingos nos Is - Jovem Pan", "value": 9}, {"from": "jovempan", "to": "Paulo Mathias", "value": 11}, {"from": "jovempan", "to": "Programa P\u00e2nico", "value": 10}, {"from": "Jovem Pan News", "to": "blog.jovempan", "value": 54}, {"from": "Jovem Pan News", "to": "buff.ly", "value": 22}, {"from": "Karol Eller", "to": "agenciabrasil.ebc", "value": 43}, {"from": "Luiz Lima", "to": "jornaldaregiao", "value": 6}, {"from": "Luiz Philippe de Orleans e Bragan\u00e7a", "to": "estadao", "value": 15}, {"from": "Luiz Philippe de Orleans e Bragan\u00e7a", "to": "lpbraganca", "value": 16}, {"from": "Luiz Philippe de Orleans e Bragan\u00e7a", "to": "poder360", "value": 11}, {"from": "estadao", "to": "Major Olimpio", "value": 9}, {"from": "estadao", "to": "Movimento Endireita Brasil", "value": 8}, {"from": "estadao", "to": "Pacto Contra o #PT", "value": 5}, {"from": "estadao", "to": "Partido Brasil", "value": 11}, {"from": "estadao", "to": "Paulo Mathias", "value": 6}, {"from": "Major Olimpio", "to": "congressoemfoco.uol", "value": 5}, {"from": "Major Olimpio", "to": "metropoles", "value": 6}, {"from": "Michelle Bolsonaro Eu Apoio", "to": "newsatual", "value": 285}, {"from": "Olavo de Carvalho", "to": "blogdoolavo", "value": 12}, {"from": "Oswaldo Eust\u00e1quio", "to": "horabrasilia", "value": 5}, {"from": "Partido Anti-PT", "to": "antiptnews.wordpress", "value": 11}, {"from": "Partido Brasil", "to": "1news", "value": 70}, {"from": "Partido Brasil", "to": "agentesfederais", "value": 20}, {"from": "Partido Brasil", "to": "altavista.news", "value": 6}, {"from": "Partido Brasil", "to": "arenaf5.blogspot", "value": 5}, {"from": "Partido Brasil", "to": "blogdohenriques", "value": 6}, {"from": "Partido Brasil", "to": "br.blastingnews", "value": 20}, {"from": "Partido Brasil", "to": "br.blastingpop", "value": 103}, {"from": "Partido Brasil", "to": "edvaldohenrique.blogspot", "value": 16}, {"from": "Partido Brasil", "to": "imprensabrasil", "value": 91}, {"from": "Partido Brasil", "to": "jornal316", "value": 5}, {"from": "Partido Brasil", "to": "newsrondonia", "value": 8}, {"from": "Partido Brasil", "to": "opiniaocritica", "value": 341}, {"from": "Partido Brasil", "to": "partidobrasiloficial", "value": 294}, {"from": "Partido Brasil", "to": "profetacristao", "value": 6}, {"from": "Partido Brasil", "to": "tribunadebrasilia", "value": 243}, {"from": "Partido Brasil", "to": "tudooknoticias", "value": 44}, {"from": "Partido Brasil", "to": "tvcidadenews", "value": 36}, {"from": "br.blastingnews", "to": "SomostodosBolsonaro", "value": 50}, {"from": "Revista Oeste", "to": "ow.ly", "value": 7}, {"from": "Somos Todos Bolsonaro", "to": "folhadarepublica", "value": 284}, {"from": "Vista P\u00e1tria", "to": "vistapatria", "value": 270}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"nodes": {"font": {"size": 30, "color": "black", "face": "arial", "strokeWidth": 2, "strokeColor": "white"}}, "physics": {"enabled": true, "stabilization": {"enabled": true, "iterations": 200, "updateInterval": 25}, "barnesHut": {"gravitationalConstant": -9000, "centralGravity": 0.3, "springLength": 120, "springConstant": 0.04, "damping": 0.09, "avoidOverlap": 0.5}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
